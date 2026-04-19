@@ -1,13 +1,6 @@
 import { HashRouter, NavLink, Route, Routes } from 'react-router-dom'
 
-function Home() {
-  return (
-    <div>
-      <h1>Next Season Radar</h1>
-      <p>Home</p>
-    </div>
-  )
-}
+import { Home } from './popup/pages/Home'
 
 function TrackedShows() {
   return (
