@@ -102,7 +102,9 @@ export interface TmdbTvDetails {
   vote_count: number
 }
 
-export async function getTvDetails(seriesId: number): Promise<TmdbTvDetails> {
+export async function getTvDetails(
+  seriesId: number,
+): Promise<TmdbTvDetails | null> {
   const token = import.meta.env.VITE_TMDB_READ_ACCESS_TOKEN as
     | string
     | undefined

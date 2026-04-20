@@ -1,1 +1,5 @@
-export { SearchBar, type SearchBarSubmitPayload } from './ui/SearchBar'
+export {
+  SearchBar,
+  type SearchBarSubmitPayload,
+  type SearchSuccessExtras,
+} from './ui/SearchBar'

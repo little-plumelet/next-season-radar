@@ -5,6 +5,10 @@ import {
   getSeriesInfo,
   type TmdbTvSearchResponse,
 } from '../../../../api/getSeriesInfo'
+import {
+  getTvDetails,
+  type TmdbTvEpisodeAir,
+} from '../../../../api/getTvDetails'
 import styles from './SearchBar.module.css'
 
 export type SearchBarSubmitPayload = {
@@ -12,11 +16,17 @@ export type SearchBarSubmitPayload = {
   seasonNumber: number
 }
 
+export type SearchSuccessExtras = {
+  /** Set when TMDB lists a next episode to air; omit when unknown or none. */
+  nextEpisode?: TmdbTvEpisodeAir
+}
+
 type SearchBarProps = {
-  /** Fired after TMDB search succeeds (same submit). */
+  /** Fired after TMDB search succeeds (same submit). Third arg is set only when search returns exactly one show (details fetched). */
   onSearchSuccess?: (
     payload: SearchBarSubmitPayload,
     response: TmdbTvSearchResponse,
+    extras?: SearchSuccessExtras,
   ) => void
   onSearchError?: (message: string) => void
   onLoadingChange?: (loading: boolean) => void
@@ -46,7 +56,16 @@ export function SearchBar({
     onLoadingChange?.(true)
     try {
       const response = await getSeriesInfo(payload.seriesName)
-      onSearchSuccess?.(payload, response)
+
+      let extras: SearchSuccessExtras | undefined
+      if (response.results.length === 1) {
+        const details = await getTvDetails(response.results[0].id)
+        extras = {
+          nextEpisode: details.next_episode_to_air ?? undefined,
+        }
+      }
+
+      onSearchSuccess?.(payload, response, extras)
     } catch (err) {
       const message =
         err instanceof Error ? err.message : 'Search failed. Please try again.'
@@ -97,9 +116,7 @@ export function SearchBar({
       </label>
       <button
         type="submit"
-        disabled={
-          seriesName.trim() === '' || seasonNumber === '' || searching
-        }
+        disabled={seriesName.trim() === '' || seasonNumber === '' || searching}
       >
         {searching ? 'Searching…' : 'Search'}
       </button>

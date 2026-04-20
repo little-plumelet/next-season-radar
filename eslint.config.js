@@ -28,6 +28,9 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    rules: {
+      'no-nested-ternary': 'error',
+    },
   },
   eslintConfigPrettier,
 )

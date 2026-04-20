@@ -1,6 +1,6 @@
 import type { TmdbTvSearchShowBasic } from '../../../../api/getSeriesInfo'
 
-import { ShowItem } from './ShowItem'
+import { ShowItem } from '../../ShowItem'
 
 import styles from './ShowsList.module.css'
 
