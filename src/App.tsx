@@ -1,35 +1,46 @@
-import { HashRouter, NavLink, Route, Routes } from 'react-router-dom'
+import {
+  HashRouter,
+  NavLink,
+  Outlet,
+  Route,
+  Routes,
+} from 'react-router-dom'
 
 import { Home } from './popup/pages/Home'
-
-function TrackedShows() {
-  return (
-    <div>
-      <h1>Tracked shows</h1>
-      <p>Your list will live here.</p>
-    </div>
-  )
-}
+import { ShowPage } from './popup/pages/ShowPage'
 
 function NotFound() {
   return <p>Page not found.</p>
 }
 
-function App() {
+function AppLayout() {
   return (
-    <HashRouter>
-      <nav className="app-nav">
+    <div className="app-layout">
+      <nav className="app-nav" aria-label="Main">
         <NavLink to="/" end>
           Home
         </NavLink>
-        <NavLink to="/tracked-shows">Tracked shows</NavLink>
       </nav>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/tracked-shows" element={<TrackedShows />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </HashRouter>
+      <main className="app-main">
+        <Outlet />
+      </main>
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <div className="app-shell">
+      <HashRouter>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/show/:id" element={<ShowPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
+        </Routes>
+      </HashRouter>
+    </div>
   )
 }
 

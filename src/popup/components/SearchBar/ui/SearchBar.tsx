@@ -9,16 +9,20 @@ import {
   getTvDetails,
   type TmdbTvEpisodeAir,
 } from '../../../../api/getTvDetails'
+import { tvDetailsToSearchExtras } from '../../../utils/tvDetailsCard'
 import styles from './SearchBar.module.css'
 
 export type SearchBarSubmitPayload = {
   seriesName: string
-  seasonNumber: number
 }
 
 export type SearchSuccessExtras = {
   /** Set when TMDB lists a next episode to air; omit when unknown or none. */
   nextEpisode?: TmdbTvEpisodeAir
+  lastEpisode?: TmdbTvEpisodeAir
+  numberOfSeasons: number
+  inProduction: boolean
+  status: 'Ended' | 'Returning Series' | 'Canceled' | 'Unknown'
 }
 
 type SearchBarProps = {
@@ -38,18 +42,16 @@ export function SearchBar({
   onLoadingChange,
 }: SearchBarProps) {
   const [seriesName, setSeriesName] = useState('')
-  const [seasonNumber, setSeasonNumber] = useState<number | ''>('')
   const [searching, setSearching] = useState(false)
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (seriesName.trim() === '' || seasonNumber === '' || searching) {
+    if (seriesName.trim() === '' || searching) {
       return
     }
 
     const payload: SearchBarSubmitPayload = {
       seriesName: seriesName.trim(),
-      seasonNumber: Number(seasonNumber),
     }
 
     setSearching(true)
@@ -60,8 +62,8 @@ export function SearchBar({
       let extras: SearchSuccessExtras | undefined
       if (response.results.length === 1) {
         const details = await getTvDetails(response.results[0].id)
-        extras = {
-          nextEpisode: details.next_episode_to_air ?? undefined,
+        if (details) {
+          extras = tvDetailsToSearchExtras(details)
         }
       }
 
@@ -84,42 +86,33 @@ export function SearchBar({
       }}
     >
       <label className={styles.field}>
-        <span className={styles.label}>Series name</span>
-        <input
-          type="text"
-          name="seriesName"
-          value={seriesName}
-          onChange={(e) => setSeriesName(e.target.value)}
-          placeholder="e.g. The Bear"
-          autoComplete="off"
-        />
+        <div className={styles.inputRow}>
+          <input
+            type="text"
+            name="seriesName"
+            value={seriesName}
+            onChange={(e) => setSeriesName(e.target.value)}
+            placeholder="Series name (e.g. The Bear)"
+            autoComplete="off"
+            aria-label="Series name"
+          />
+          <button
+            className={styles.searchButton}
+            type="submit"
+            disabled={seriesName.trim() === '' || searching}
+            aria-label={searching ? 'Searching series' : 'Search series'}
+          >
+            {searching ? (
+              <span className={styles.searchingContent}>
+                <span className={styles.spinner} aria-hidden="true" />
+                <span>Search</span>
+              </span>
+            ) : (
+              'Search'
+            )}
+          </button>
+        </div>
       </label>
-      <label className={styles.field}>
-        <span className={styles.label}>Season number</span>
-        <input
-          type="number"
-          name="seasonNumber"
-          min={1}
-          step={1}
-          value={seasonNumber}
-          onChange={(e) => {
-            const v = e.target.value
-            if (v === '') {
-              setSeasonNumber('')
-              return
-            }
-            const n = Number(v)
-            if (!Number.isNaN(n)) setSeasonNumber(n)
-          }}
-          placeholder="1"
-        />
-      </label>
-      <button
-        type="submit"
-        disabled={seriesName.trim() === '' || seasonNumber === '' || searching}
-      >
-        {searching ? 'Searching…' : 'Search'}
-      </button>
     </form>
   )
 }

@@ -1,65 +1,39 @@
+import { Link } from 'react-router-dom'
+
 import type { TmdbTvSearchShowBasic } from '../../../../api/getSeriesInfo'
-import type { TmdbTvEpisodeAir } from '../../../../api/getTvDetails'
 
-import { NextEpisodeSection } from './NextEpisodeSection'
-
+import { ShowCardAirRating, ShowCardPoster } from './ShowItemParts'
+import { cx } from './showItemShared'
 import styles from './ShowItem.module.css'
-
-const TMDB_POSTER_W92 = 'https://image.tmdb.org/t/p/w92'
-
-function cx(...parts: Array<string | undefined | false>): string {
-  return parts.filter(Boolean).join(' ')
-}
 
 export type ShowItemProps = {
   show: TmdbTvSearchShowBasic
-  /** Wider poster + spacing for the single-match row with TV details fetched. */
+  /** Wider poster + spacing for a single-match row. */
   detailLayout?: boolean
-  /** Next episode when TMDB returned one; omit when none scheduled or unknown. */
-  nextEpisode?: TmdbTvEpisodeAir
 }
 
-export function ShowItem({ show, nextEpisode, detailLayout }: ShowItemProps) {
-  const expanded = Boolean(detailLayout)
-
+export function ShowItem({ show, detailLayout }: ShowItemProps) {
   return (
-    <li className={cx(styles.result, expanded && styles.resultWithNext)}>
-      <div
+    <li className={cx(styles.result, detailLayout && styles.resultWithNext)}>
+      <Link
         className={cx(
-          styles.posterFrame,
-          expanded && styles.posterFrameFill,
+          styles.cardLink,
+          detailLayout && styles.cardLinkExpanded,
         )}
-        aria-hidden={show.poster_path ? undefined : true}
+        to={`/show/${show.id}`}
       >
-        {show.poster_path ? (
-          <img
-            className={styles.posterImg}
-            src={`${TMDB_POSTER_W92}${show.poster_path}`}
-            alt=""
-            width={46}
-            height={69}
-          />
-        ) : null}
-      </div>
-      <div className={styles.layout}>
-        <p className={styles.resultTitle}>{show.name}</p>
-
-        <NextEpisodeSection episode={nextEpisode} />
-
-        <p
-          className={cx(
-            styles.resultMeta,
-            expanded && styles.resultMetaMuted,
-          )}
-        >
-          {show.first_air_date
-            ? `First aired ${show.first_air_date}`
-            : 'First air date unknown'}
-          {show.vote_average > 0
-            ? ` · ★ ${show.vote_average.toFixed(1)}`
-            : null}
-        </p>
-      </div>
+        <ShowCardPoster posterPath={show.poster_path} fill={detailLayout} />
+        <div className={styles.layout}>
+          <p className={styles.resultTitle}>{show.name}</p>
+          <div>
+            <ShowCardAirRating
+              firstAirDate={show.first_air_date}
+              voteAverage={show.vote_average}
+              detailLayout={detailLayout}
+            />
+          </div>
+        </div>
+      </Link>
     </li>
   )
 }

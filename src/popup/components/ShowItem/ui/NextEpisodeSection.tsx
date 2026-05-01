@@ -14,9 +14,7 @@ function formatAirDate(isoDate: string): string {
 
 function NextEpisodeAirHeading({ episode }: { episode: TmdbTvEpisodeAir }) {
   if (!episode.air_date) {
-    return (
-      <span className={styles.nextAirDateMuted}>Air date TBA</span>
-    )
+    return <span className={styles.nextAirDateMuted}>Air date TBA</span>
   }
   return (
     <time className={styles.nextAirDate} dateTime={episode.air_date}>
@@ -37,6 +35,7 @@ export function NextEpisodeSection({
 
   return (
     <div className={styles.nextFocus} aria-live="polite">
+      <p className={styles.nextEpisodeDetail}>Next episode:</p>
       <NextEpisodeAirHeading episode={episode} />
       <p className={styles.nextEpisodeDetail}>
         Season {episode.season_number}, Episode {episode.episode_number}
