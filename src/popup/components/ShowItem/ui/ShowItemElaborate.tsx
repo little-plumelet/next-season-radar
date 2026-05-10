@@ -3,6 +3,10 @@ import { useState } from 'react'
 import type { TmdbTvSearchShowBasic } from '../../../../api/getSeriesInfo'
 import { getTvDetails } from '../../../../api/getTvDetails'
 import type { SearchSuccessExtras } from '../../SearchBar/ui/SearchBar'
+import {
+  addTrackedShow,
+  trackedShowFromTvDetails,
+} from '../../../../storage/trackedShows'
 
 import { NextEpisodeSection } from './NextEpisodeSection'
 import { ShowCardAirRating, ShowCardPoster } from './ShowItemParts'
@@ -36,8 +40,17 @@ export function ShowItemElaborate({
         setTrackMessage('Could not refresh this show right now. Please retry.')
         return
       }
+      try {
+        await addTrackedShow(trackedShowFromTvDetails(details))
+      } catch {
+        setTrackState('error')
+        setTrackMessage(
+          'Could not save this show right now. Please check extension storage and retry.',
+        )
+        return
+      }
       setTrackState('success')
-      setTrackMessage('Show details refreshed. Tracking integration is next.')
+      setTrackMessage('Saved to your tracked shows.')
     } catch {
       setTrackState('error')
       setTrackMessage('Could not refresh this show right now. Please retry.')
