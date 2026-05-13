@@ -8,6 +8,7 @@ import {
 
 import { Home } from './popup/pages/Home'
 import { ShowPage } from './popup/pages/ShowPage'
+import { TrackedPage } from './popup/pages/TrackedPage'
 
 function NotFound() {
   return <p>Page not found.</p>
@@ -20,6 +21,7 @@ function AppLayout() {
         <NavLink to="/" end>
           Home
         </NavLink>
+        <NavLink to="/tracked">Tracked</NavLink>
       </nav>
       <main className="app-main">
         <Outlet />
@@ -35,6 +37,7 @@ function App() {
         <Routes>
           <Route element={<AppLayout />}>
             <Route path="/" element={<Home />} />
+            <Route path="/tracked" element={<TrackedPage />} />
             <Route path="/show/:id" element={<ShowPage />} />
             <Route path="*" element={<NotFound />} />
           </Route>

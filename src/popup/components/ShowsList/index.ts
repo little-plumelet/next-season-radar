@@ -1,1 +1,1 @@
-export { ShowsList, type ShowsListProps } from './ui/ShowsList'
+export { ShowsList, type ShowsListProps } from './ui/ShowsList.tsx'

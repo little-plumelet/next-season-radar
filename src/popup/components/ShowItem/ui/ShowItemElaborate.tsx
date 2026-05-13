@@ -8,9 +8,10 @@ import {
   trackedShowFromTvDetails,
 } from '../../../../storage/trackedShows'
 
+import { ShowCardPoster } from '../../ShowCardPoster'
 import { NextEpisodeSection } from './NextEpisodeSection'
-import { ShowCardAirRating, ShowCardPoster } from './ShowItemParts'
-import { cx } from './showItemShared'
+import { ShowCardAirRating } from './ShowItemParts'
+import { cx } from '../../../utils/cx'
 import styles from './ShowItem.module.css'
 
 export type ShowItemElaborateProps = {
@@ -68,7 +69,7 @@ export function ShowItemElaborate({
       )}
     >
       <div className={styles.elaborateMain}>
-        <ShowCardPoster posterPath={show.poster_path} fill={detailLayout} />
+        <ShowCardPoster posterPath={show.poster_path} variant={detailLayout ? 'fill' : 'default'} />
         <div className={styles.layout}>
           <p className={styles.resultTitle}>{show.name}</p>
 

@@ -2,4 +2,4 @@ export {
   SearchBar,
   type SearchBarSubmitPayload,
   type SearchSuccessExtras,
-} from './ui/SearchBar'
+} from './ui/SearchBar.tsx'

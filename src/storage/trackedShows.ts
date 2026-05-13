@@ -35,6 +35,22 @@ export async function getTrackedShows(): Promise<TrackedShow[]> {
   })
 }
 
+export async function removeTrackedShow(showId: number): Promise<void> {
+  const existing = await getTrackedShows()
+  const next = existing.filter((s) => s.id !== showId)
+
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.set({ [TRACKED_SHOWS_KEY]: next }, () => {
+      const lastError = chrome.runtime.lastError
+      if (lastError) {
+        reject(new Error(lastError.message))
+        return
+      }
+      resolve()
+    })
+  })
+}
+
 export async function addTrackedShow(entry: TrackedShow): Promise<void> {
   const existing = await getTrackedShows()
   const idx = existing.findIndex((s) => s.id === entry.id)

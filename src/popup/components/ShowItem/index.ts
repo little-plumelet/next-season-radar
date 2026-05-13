@@ -1,6 +1,6 @@
-export { ShowItem, type ShowItemProps } from './ui/ShowItem'
+export { ShowItem, type ShowItemProps } from './ui/ShowItem.tsx'
 export {
   ShowItemElaborate,
   type ShowItemElaborateProps,
-} from './ui/ShowItemElaborate'
-export { NextEpisodeSection } from './ui/NextEpisodeSection'
+} from './ui/ShowItemElaborate.tsx'
+export { NextEpisodeSection } from './ui/NextEpisodeSection.tsx'
