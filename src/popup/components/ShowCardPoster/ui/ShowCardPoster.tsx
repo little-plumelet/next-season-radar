@@ -1,8 +1,7 @@
 import { cx } from '../../../utils/cx'
+import { tmdbPosterUrl } from '../../../../utils/tmdbPosterUrl'
 
 import styles from './ShowCardPoster.module.css'
-
-const TMDB_POSTER_W92 = 'https://image.tmdb.org/t/p/w92'
 
 const variantClass = {
   default: undefined,
@@ -24,7 +23,7 @@ export function ShowCardPoster({ posterPath, variant = 'default' }: ShowCardPost
       {posterPath ? (
         <img
           className={styles.posterImg}
-          src={`${TMDB_POSTER_W92}${posterPath}`}
+          src={tmdbPosterUrl(posterPath) ?? ''}
           alt=""
           width={46}
           height={69}

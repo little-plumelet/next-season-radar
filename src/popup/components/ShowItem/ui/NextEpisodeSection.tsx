@@ -1,16 +1,7 @@
 import type { TmdbTvEpisodeAir } from '../../../../api/getTvDetails'
+import { formatAirDate } from '../../../../utils/formatAirDate'
 
 import styles from './ShowItem.module.css'
-
-function formatAirDate(isoDate: string): string {
-  const d = new Date(`${isoDate}T12:00:00`)
-  return d.toLocaleDateString(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
-}
 
 function NextEpisodeAirHeading({ episode }: { episode: TmdbTvEpisodeAir }) {
   if (!episode.air_date) {

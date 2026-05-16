@@ -1,12 +1,8 @@
 import { useState } from 'react'
 
 import type { TmdbTvSearchShowBasic } from '../../../../api/getSeriesInfo'
-import { getTvDetails } from '../../../../api/getTvDetails'
 import type { SearchSuccessExtras } from '../../SearchBar/ui/SearchBar'
-import {
-  addTrackedShow,
-  trackedShowFromTvDetails,
-} from '../../../../storage/trackedShows'
+import { addTrackedShow } from '../../../../storage/trackedShows'
 
 import { ShowCardPoster } from '../../ShowCardPoster'
 import { NextEpisodeSection } from './NextEpisodeSection'
@@ -35,26 +31,18 @@ export function ShowItemElaborate({
     setTrackState('loading')
     setTrackMessage('')
     try {
-      const details = await getTvDetails(show.id)
-      if (!details) {
-        setTrackState('error')
-        setTrackMessage('Could not refresh this show right now. Please retry.')
-        return
-      }
-      try {
-        await addTrackedShow(trackedShowFromTvDetails(details))
-      } catch {
-        setTrackState('error')
-        setTrackMessage(
-          'Could not save this show right now. Please check extension storage and retry.',
-        )
-        return
-      }
+      await addTrackedShow({
+        id: show.id,
+        poster_path: show.poster_path,
+        name: show.name,
+      })
       setTrackState('success')
       setTrackMessage('Saved to your tracked shows.')
     } catch {
       setTrackState('error')
-      setTrackMessage('Could not refresh this show right now. Please retry.')
+      setTrackMessage(
+        'Could not save this show right now. Please check extension storage and retry.',
+      )
     }
   }
 
@@ -69,7 +57,10 @@ export function ShowItemElaborate({
       )}
     >
       <div className={styles.elaborateMain}>
-        <ShowCardPoster posterPath={show.poster_path} variant={detailLayout ? 'fill' : 'default'} />
+        <ShowCardPoster
+          posterPath={show.poster_path}
+          variant={detailLayout ? 'fill' : 'default'}
+        />
         <div className={styles.layout}>
           <p className={styles.resultTitle}>{show.name}</p>
 
@@ -101,7 +92,7 @@ export function ShowItemElaborate({
               void handleTrackNextSeason()
             }}
           >
-            {trackState === 'loading' ? 'Checking latest details…' : 'Track next season'}
+            {trackState === 'loading' ? 'Saving…' : 'Track next season'}
           </button>
           {trackState !== 'idle' && trackMessage ? (
             <p

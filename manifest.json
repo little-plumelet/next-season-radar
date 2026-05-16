@@ -10,5 +10,6 @@
     "service_worker": "src/background/index.ts",
     "type": "module"
   },
-  "permissions": ["storage"]
+  "permissions": ["storage", "alarms", "notifications"],
+  "host_permissions": ["https://image.tmdb.org/*"]
 }
